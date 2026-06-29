@@ -1,7 +1,7 @@
 import datetime
 
 class SingletonMeta(type):
-    _instancias_ = {}
+    _instancias = {}
     
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instancias:
@@ -60,8 +60,8 @@ class Prestamo:
         self.fecha_Devolucion = datetime.date.today()
     
     def mostrar_info(self):
-        devuelto = f"Devuelto el: {self.fecha_devolucion}" if self.fecha_Devolucion else "ACTIVO (Pendiente de devolución)"
-        return f"Prestamo-> {self.libro.titulo} | Prestado a: {self.usuario.nombre} {self.usuario.apellido} | Fecha: {self.fecha_prestamo} | Estado: {devuelto}"
+        devuelto = f"Devuelto el: {self.fecha_Devolucion}" if self.fecha_Devolucion else "ACTIVO (Pendiente de devolución)"
+        return f"Prestamo-> {self.libro.titulo} | Prestado a: {self.usuario.nombre} {self.usuario.apellido} | Fecha: {self.fecha_Prestamo} | Estado: {devuelto}"
 
 class Biblioteca(metaclass=SingletonMeta):
     def __init__(self):
@@ -88,12 +88,12 @@ class Biblioteca(metaclass=SingletonMeta):
         print("\n--- LISTADO DE LIBROS EN SYSTEMA ---")
         if not self.libros:
             print("No hay libros registrados.")
-        for libro in self.libro:
+        for libro in self.libros:
             print(libro.mostrar_info())
     
     @log_operacion
     def alta_usuario(self, usuario):
-        self.usuario.append(usuario)
+        self.usuarios.append(usuario)
         print(f"Usuario {usuario.nombre} {usuario.apellido} registrado.")
     
     @log_operacion
@@ -102,6 +102,7 @@ class Biblioteca(metaclass=SingletonMeta):
             if usuario.dni == dni:
                 self.usuarios.remove(usuario)
                 print(f"Usuario con DNI {dni} eliminado.")
+                return
         print(f"No se encontro ningun usuario con DNI: {dni}")
 
     @log_operacion
@@ -142,7 +143,7 @@ class Biblioteca(metaclass=SingletonMeta):
             print("[ERROR] El usuario no existe en el sistema")
             return
         if libro_encontrado.prestado:
-            print("[ERROR] El libro '{libro_encontrado.titulo}' Ya posee un prestamo activo.")
+            print(f"[ERROR] El libro '{libro_encontrado.titulo}' Ya posee un prestamo activo.")
             return
         
         nuevo_prestamo = Prestamo(libro_encontrado, usuario_encontrado)
@@ -153,7 +154,7 @@ class Biblioteca(metaclass=SingletonMeta):
     @log_operacion
     def registrar_devolucion(self, isbn):
         for prestamo in self.prestamos:
-            if prestamo.libro.isbn == isbn and prestamos.fecha_devolucion is None:
+            if prestamo.libro.isbn == isbn and prestamo.fecha_Devolucion is None:
                 prestamo.registrar_devolucion()
                 prestamo.libro.prestado = False
                 print(f"Devolucin registrada para el libro : '{prestamo.libro.titulo}'.")
@@ -163,7 +164,7 @@ class Biblioteca(metaclass=SingletonMeta):
     @log_operacion
     def consultar_prestamos_activos(self):
         print("\n--- PRÉSTAMOS ACTIVOS ---")
-        activos = [p for p in self.prestamos if p.fecha_devolucion is None]
+        activos = [p for p in self.prestamos if p.fecha_Devolucion is None]
         if not activos:
             print("No hay prestamos activos en este momento.")
         for p in activos:
