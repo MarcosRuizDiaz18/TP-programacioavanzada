@@ -1,5 +1,11 @@
 import datetime
 
+# Patron seleccionado: singleton 
+# Elegimos este para la clase de biblioteca por que el sistema tiene que tener solo 1 instancia que use todos los datos
+# La metaclase que controla esto es la SingletonMeta, lo que está haciendo es controlar la creacion de instancias 
+# y al ser de esta manera se concentra todo por el mismo canal y mantiene organizado sin confundir informacion
+
+
 class SingletonMeta(type):
     _instancias = {}
     
@@ -18,7 +24,7 @@ def log_operacion(funcion):
         return resultado
     return wrapper
 
-#Modelo de datos
+# datos de usuarios
 class persona:
     def __init__(self, nombre, apellido, dni):
         self.nombre = nombre
@@ -63,17 +69,37 @@ class Prestamo:
         devuelto = f"Devuelto el: {self.fecha_Devolucion}" if self.fecha_Devolucion else "ACTIVO (Pendiente de devolución)"
         return f"Prestamo-> {self.libro.titulo} | Prestado a: {self.usuario.nombre} {self.usuario.apellido} | Fecha: {self.fecha_Prestamo} | Estado: {devuelto}"
 
+# Los objetos Prestamo creados y modificados por la clase Biblioteca
+# Relacion de clase Biblioteca, libro y biblioteca - usuario 
+# Los Libros y Usuarios existen independiente de la bibliteca por que lo armamos en clases distintas pero si los registran
+
 class Biblioteca(metaclass=SingletonMeta):
     def __init__(self):
         self.libros = []
         self.usuarios = []
-        self.prestamos = []
+        self.prestamos = []  # composicion: los prestamos son creados y destruidos por Biblioteca
     
     @log_operacion
     def alta_libro(self, libro):
         self.libros.append(libro)
         print(f"Libro '{libro.titulo}' agregado al sistema.")
     
+    @log_operacion
+    def modificacion_libro(self, isbn, nuevo_titulo=None, nuevo_autor=None, nuevo_año=None, nuevas_paginas=None):
+        for libro in self.libros:
+            if libro.isbn == isbn:
+                if nuevo_titulo:
+                    libro.titulo = nuevo_titulo
+                if nuevo_autor:
+                    libro.autor = nuevo_autor
+                if nuevo_año:
+                    libro.año = nuevo_año
+                if nuevas_paginas:
+                    libro.paginas = nuevas_paginas
+                print(f"Libro con ISBN {isbn} actualizado.")
+                return
+        print(f"No se encontro ningun libro con el ISBN: {isbn}")
+
     @log_operacion
     def baja_libro(self, isbn):
         for libro in self.libros:
@@ -163,7 +189,7 @@ class Biblioteca(metaclass=SingletonMeta):
     
     @log_operacion
     def consultar_prestamos_activos(self):
-        print("\n--- PRÉSTAMOS ACTIVOS ---")
+        print("\n--- PRESTAMOS ACTIVOS ---")
         activos = [p for p in self.prestamos if p.fecha_Devolucion is None]
         if not activos:
             print("No hay prestamos activos en este momento.")

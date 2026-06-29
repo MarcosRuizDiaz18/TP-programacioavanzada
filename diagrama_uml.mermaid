@@ -1,0 +1,75 @@
+classDiagram
+
+    %% HERENCIA
+    persona <|-- Usuario : hereda
+
+    %% AGREGACION (Biblioteca agrega Libro y Usuario)
+    Biblioteca o-- Libro : agrega
+    Biblioteca o-- Usuario : agrega
+
+    %% COMPOSICION (Biblioteca compone Prestamo)
+    Biblioteca *-- Prestamo : compone
+
+    %% ASOCIACION (Prestamo referencia Libro y Usuario)
+    Prestamo --> Libro : referencia
+    Prestamo --> Usuario : referencia
+
+    class persona {
+        +String nombre
+        +String apellido
+        +String dni
+        +mostrar_info() String
+    }
+
+    class Usuario {
+        +String correo
+        +mostrar_info() String
+    }
+
+    class Libro {
+        +String titulo
+        +String autor
+        +String isbn
+        +int año
+        +int paginas
+        +bool prestado
+        +mostrar_info() String
+    }
+
+    class Prestamo {
+        +Libro libro
+        +Usuario usuario
+        +Date fecha_Prestamo
+        +Date fecha_Devolucion
+        +registrar_devolucion()
+        +mostrar_info() String
+    }
+
+    class SingletonMeta {
+        <<metaclass>>
+        +dict _instancias
+        +__call__()
+    }
+
+    class Biblioteca {
+        <<Singleton>>
+        +list libros
+        +list usuarios
+        +list prestamos
+        +alta_libro(libro)
+        +modificacion_libro(isbn, ...)
+        +baja_libro(isbn)
+        +listar_libros()
+        +alta_usuario(usuario)
+        +modificacion_usuario(dni, nuevo_correo)
+        +baja_usuario(dni)
+        +listar_usuarios()
+        +registrar_prestamo(isbn, dni)
+        +registrar_devolucion(isbn)
+        +consultar_prestamos_activos()
+    }
+
+    SingletonMeta <.. Biblioteca : usa como metaclase
+
+    note for Biblioteca "Patron de diseno: Singleton\nUna sola instancia centraliza\ntodos los datos del sistema."
+    note for Prestamo "Composicion con Biblioteca:\nexiste y se destruye dentro de ella."
