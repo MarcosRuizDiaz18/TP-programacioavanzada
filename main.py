@@ -163,7 +163,7 @@ class Biblioteca(metaclass=SingletonMeta):
                 break
         
         if not libro_encontrado:
-            print("[ERROR] eL LIBRO no existe en el sistema")
+            print("[ERROR] El libro no existe en el sistema")
             return
         if not usuario_encontrado:
             print("[ERROR] El usuario no existe en el sistema")
@@ -183,7 +183,7 @@ class Biblioteca(metaclass=SingletonMeta):
             if prestamo.libro.isbn == isbn and prestamo.fecha_Devolucion is None:
                 prestamo.registrar_devolucion()
                 prestamo.libro.prestado = False
-                print(f"Devolucin registrada para el libro : '{prestamo.libro.titulo}'.")
+                print(f"Devolución registrada para el libro: '{prestamo.libro.titulo}'.")
                 return
         print("[ERROR] No se encontro un prestamos activo para ese ISBN")
     
@@ -196,3 +196,28 @@ class Biblioteca(metaclass=SingletonMeta):
         for p in activos:
             print(p.mostrar_info())        
                 
+"""
+SingletonMeta.__call__                  	    — Controla que Biblioteca solo se instancie una vez, cada vez que se llama Biblioteca, devuelve la misma instancia existente en lugar de crear una nueva
+log_operacion(funcion) 				            — Decorador que imprime en consola un mensaje de inicio y fin cada vez que se ejecuta la funcion decorada. Se aplica con @log_operacion sobre los metodos de Biblioteca
+persona.__init__(nombre, apellido, dni) 	    — Crea una persona con nombre, apellido y DNI
+persona.mostrar_info() 				            — Retorna nombre completo y DNI como texto
+Usuario.__init__(nombre, apellido, dni, correo) — Hereda de persona y agrega el campo correo
+Usuario.mostrar_info() 				            — Retorna los datos del usuario (nombre, DNI, email) formateados
+Libro.__init__(titulo, autor, isbn, a, paginas) — Crea un libro
+Libro.mostrar_info() 				            — Retorna los datos del libro mas su estado (PRESTADO / DISPONIBLE)
+Prestamo.__init__(libro, usuario) 		        — Registra un prestamo con fecha de hoy. fecha_Devolucion queda en None hasta que se devuelva
+Prestamo.registrar_devolucion() 		        — Marca la fecha de devolución con la fecha actual
+Prestamo.mostrar_info() 			            — Retorna info del préstamo: libro, usuario, fecha de préstamo y estado
+Biblioteca.__init__() 				            — Inicializa las tres listas: libros, usuarios, prestamos
+alta_libro(libro) 				                — Agrega un objeto Libro a la lista de libros
+modificacion_libro(isbn, ...)			        — Busca un libro por ISBN y actualiza los campos que se pasen (titulo, autor, año, paginas)
+baja_libro(isbn) 				                — Busca un libro por ISBN y lo elimina de la lista
+listar_libros() 				                — Imprime todos los libros registrados
+alta_usuario(usuario) 				            — Agrega un objeto Usuario a la lista de usuarios
+baja_usuario(dni) 				                — Busca un usuario por DNI y lo elimina de la lista
+modificacion_usuario(dni, nuevo_correo) 	    — Busca un usuario por DNI y actualiza su correo
+listar_usuarios() 				                — Imprime todos los usuarios registrados
+registrar_prestamo(isbn, dni) 			        — Busca el libro (por ISBN) y el usuario (por DNI), valida que existan y que el libro esté disponible, y crea un nuevo Prestamo
+registrar_devolucion(isbn) 			            — Busca un préstamo activo por ISBN y lo marca como devuelto, liberando el libro
+consultar_prestamos_activos() 			        — Filtra e imprime los préstamos donde fecha_Devolucion es None
+"""
